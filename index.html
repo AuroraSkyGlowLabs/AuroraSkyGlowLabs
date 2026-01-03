@@ -89,7 +89,7 @@ function addMarker(lat, lng, event) {
 
 loadReports();
 
-// Submission (admin manually adds to JSON for now)
+// Submission (local only; instructions for saving to repo)
 document.getElementById('reportForm').addEventListener('submit', e => {
   e.preventDefault();
   const event = document.getElementById('event').value;
@@ -102,16 +102,47 @@ document.getElementById('reportForm').addEventListener('submit', e => {
         lat = pos.coords.latitude;
         lng = pos.coords.longitude;
         addMarker(lat, lng, event);
-        alert("Reported locally! To save it permanently, update reports.json in the AuroraReports repo.");
+        showRepoAlert(lat, lng, event);
       });
     } else {
       alert("Please provide a location or enable geolocation.");
     }
   } else {
     addMarker(lat, lng, event);
-    alert("Reported locally! To save it permanently, update reports.json in the AuroraReports repo.");
+    showRepoAlert(lat, lng, event);
   }
 });
+
+// Dynamic alert with JSON template including timestamp
+function showRepoAlert(lat, lng, event) {
+  const timestamp = Date.now(); // current time in milliseconds
+
+  alert(
+`🌌 Report added locally!
+
+To make your report permanent for everyone, update the AuroraReports repo on GitHub. Here’s how:
+
+1️⃣ Go to the repo: https://github.com/AuroraSkyGlowLabs/AuroraReports
+2️⃣ Click on the file named 'reports.json'.
+3️⃣ Click the pencil icon (Edit this file).
+4️⃣ Inside the square brackets [ ], add a new report object, separated by a comma if there are other reports.
+
+Here’s your report JSON (ready to copy!):
+
+{
+  "lat": ${lat},     
+  "lng": ${lng},     
+  "event": "${event}",  
+  "timestamp": ${timestamp} 
+}
+
+5️⃣ Scroll down to 'Commit changes', add a message like "Add new aurora report from [your name]".
+6️⃣ Choose 'Commit directly to the main branch'.
+7️⃣ Click 'Commit changes'.
+
+Your report will now appear on the site for everyone!`
+  );
+}
 </script>
 
 </body>
