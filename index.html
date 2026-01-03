@@ -70,15 +70,19 @@
 
 <header>
   <h1>🌌 AuroraSkyGlowLabs — Aurora Reports (BETA)</h1>
+
   <div class="notice">
     Reports are community-submitted. Locations are automatically blurred for privacy.<br>
     Please avoid submitting exact coordinates. Limit submissions to 1–2 people at a time 🙂
   </div>
 
-  <!-- Maintenance banner with Twitter -->
+  <!-- Manual Maintenance Banner (STAYS) -->
   <div id="maintenance-banner">
-    ⚠️ Currently undergoing maintenance — we are aware that reports cannot be submitted.  
-    More updates will be posted on <a href="https://twitter.com/wistormchaser_" target="_blank" style="color:white; text-decoration:underline;">@wistormchaser_</a> ⚠️
+    ⚠️ Ope we broke it — reports may be weird, missing, duplicated, or possessed 👻  
+    Maintenance is ongoing. Updates posted on
+    <a href="https://twitter.com/wistormchaser_" target="_blank" style="color:white; text-decoration:underline;">
+      @wistormchaser_
+    </a>
   </div>
 </header>
 
@@ -107,7 +111,7 @@
 
   const map = L.map("map", {
     minZoom: 2,
-    maxZoom: 6, // prevents street-level zoom
+    maxZoom: 6,
     scrollWheelZoom: false,
     doubleClickZoom: false
   }).setView([43, -88], 4);
@@ -121,7 +125,6 @@
   // ===============================
 
   function anonymizeCoord(value) {
-    // Rounds to 1 decimal (~7–10 miles)
     return Math.round(value * 10) / 10;
   }
 
@@ -146,9 +149,7 @@
         if (
           typeof report.lat !== "number" ||
           typeof report.lng !== "number"
-        ) {
-          return;
-        }
+        ) return;
 
         const safeLat = anonymizeCoord(report.lat);
         const safeLng = anonymizeCoord(report.lng);
@@ -168,11 +169,10 @@
   }
 
   loadReports();
-
-  // Optional auto-refresh every 60 seconds
-  // setInterval(loadReports, 60000);
-
 </script>
+
+<!-- Statuspage Embed (pulls from OTHER repo / external system) -->
+<script src="https://auroraskyglowlabs1.statuspage.io/embed/script.js"></script>
 
 </body>
 </html>
