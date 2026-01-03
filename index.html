@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AuroraSkyGlowLabs</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  #map { height: 600px; width: 100%; margin-top: 20px; }
+  form label, select, input, button { display: block; margin: 5px 0; }
+  button { cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>AuroraSkyGlowLabs</h1>
+<p>Submit your aurora or sky sightings! Use your location or enter manually.</p>
+
+<form id="reportForm">
+  <label for="event">Event / Intensity:</label>
+  <select id="event" required>
+    <option value="fullMoon">Well, it’s a full moon. Just wanted to report it 🌕</option>
+    <option value="meteor">Meteor shower event, don’t mind me 🌠</option>
+    <option value="clouds">Clouds look cool today ☁️</option>
+    <option value="surprised">😲😳</option>
+    <option value="faint">Faint aurora 🌌</option>
+    <option value="bright">Bright aurora 🌌</option>
+    <option value="amazing">Amazing aurora 🌌</option>
+    <option value="magical">This is literally magical ✨</option>
+    <option value="speechless">Speechless 😶</option>
+    <option value="staring">Send help, I can’t stop staring 😵</option>
+    <option value="mindBlown">Mind = Blown 🤯</option>
+    <option value="callNASA">Call NASA 🛸</option>
+    <option value="crying">Holt shit I can't believe my eyes I'm crying my face off 😭</option>
+    <option value="heaven">Am I in heaven? 😇</option>
+    <option value="tearsJoy">Sobbing tears of joy 😭💖</option>
+    <option value="aliens">Aliens confirmed 👽</option>
+    <option value="skyFire">Caught the sky on fire 🔥</option>
+    <option value="postcard">Send a postcard, this is insane 📬</option>
+    <option value="tornadoAurora">Tornado + Aurora 🌪️🌌</option>
+  </select>
+
+  <label for="lat">Latitude (optional):</label>
+  <input type="number" id="lat" step="0.0001" placeholder="e.g., 43.0731">
+
+  <label for="lng">Longitude (optional):</label>
+  <input type="number" id="lng" step="0.0001" placeholder="e.g., -89.4012">
+
+  <button type="submit">Report</button>
+</form>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const repoURL = "https://raw.githubusercontent.com/AuroraSkyGlowLabs/AuroraReports/main/reports.json";
+
+// Initialize map
+const map = L.map('map').setView([43.0731, -89.4012], 5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+const markers = L.layerGroup().addTo(map);
+
+const eventIcons = {
+  fullMoon: '🌕', meteor: '🌠', clouds: '☁️', surprised: '😲😳',
+  faint: '🌌', bright: '🌌', amazing: '🌌', magical: '✨',
+  speechless: '😶', staring: '😵', mindBlown: '🤯', callNASA: '🛸',
+  crying: '😭', heaven: '😇', tearsJoy: '😭💖', aliens: '👽',
+  skyFire: '🔥', postcard: '📬', tornadoAurora: '🌪️🌌'
+};
+
+// Load reports from GitHub JSON
+async function loadReports() {
+  try {
+    const res = await fetch(repoURL);
+    const data = await res.json();
+    data.forEach(r => addMarker(r.lat, r.lng, r.event));
+  } catch (e) {
+    console.error("Failed to load reports:", e);
+  }
+}
+
+function addMarker(lat, lng, event) {
+  const marker = L.marker([lat, lng]).addTo(markers);
+  marker.bindPopup(eventIcons[event] + " " + event);
+}
+
+loadReports();
+
+// Submission (admin manually adds to JSON for now)
+document.getElementById('reportForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const event = document.getElementById('event').value;
+  let lat = parseFloat(document.getElementById('lat').value);
+  let lng = parseFloat(document.getElementById('lng').value);
+
+  if (!lat || !lng) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        lat = pos.coords.latitude;
+        lng = pos.coords.longitude;
+        addMarker(lat, lng, event);
+        alert("Reported locally! To save it permanently, update reports.json in the AuroraReports repo.");
+      });
+    } else {
+      alert("Please provide a location or enable geolocation.");
+    }
+  } else {
+    addMarker(lat, lng, event);
+    alert("Reported locally! To save it permanently, update reports.json in the AuroraReports repo.");
+  }
+});
+</script>
+
+</body>
+</html>
