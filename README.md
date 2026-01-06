@@ -92,7 +92,7 @@ AuroraSkyGlowLabs/
 - [ ] Mobile optimization — improve layout for phones and tablets.
 - [ ] Optional login system — allow contributors to track their submissions.
 - [ ] Enhanced visuals — animated aurora markers and event-specific icons.
-- [] Fix map
+- [&check;] Fix map
 
 ---
 
