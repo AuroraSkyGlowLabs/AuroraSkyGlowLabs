@@ -85,14 +85,14 @@ AuroraSkyGlowLabs/
 
 ## Roadmap / Planned Updates
 
-- [ ] Automatic JSON commits — allow reports to be saved automatically via a backend (remove manual GitHub edits).
-- [ ] Interactive in-page copy panel — show the JSON snippet on the page for easier copy/paste instead of an alert.
+- [ ] Automatic JSON commits — allow reports to be saved automatically via a backend (remove manual GitHub edits). (delayed)
+- &check;  Interactive in-page copy panel — show the JSON snippet on the page for easier copy/paste instead of an alert. 
 - [ ] Live filtering — filter markers by event type or intensity.
 - [ ] Historical view — timeline of past reports.
 - [ ] Mobile optimization — improve layout for phones and tablets.
 - [ ] Optional login system — allow contributors to track their submissions.
 - [ ] Enhanced visuals — animated aurora markers and event-specific icons.
-- [&check;] Fix map
+- &check; Fix map
 
 ---
 
