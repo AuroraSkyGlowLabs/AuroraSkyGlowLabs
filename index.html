@@ -3,160 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <title>AuroraSkyGlowLabs – Aurora Reports (Beta)</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0b1020;
-      color: #eaeaf0;
-    }
-
-    header {
-      padding: 12px 16px;
-      background: #121a36;
-      border-bottom: 1px solid #243066;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .top-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 1.2rem;
-    }
-
-    .notice {
-      font-size: 0.9rem;
-      margin-top: 6px;
-      color: #cfd3ff;
-    }
-
-    #maintenance-banner {
-      background: #ff4d4d;
-      color: white;
-      text-align: center;
-      padding: 8px;
-      font-weight: bold;
-      margin-top: 6px;
-      line-height: 1.4;
-      border-radius: 6px;
-    }
-
-    #map {
-      height: 60vh;
-      width: 100%;
-    }
-
-    footer {
-      padding: 10px;
-      font-size: 0.8rem;
-      background: #0e1530;
-      border-top: 1px solid #243066;
-      text-align: center;
-      color: #aab0ff;
-    }
-
-    a {
-      color: #8fb4ff;
-    }
-
-    form {
-      margin: 12px 16px;
-      background: #121a36;
-      padding: 10px;
-      border-radius: 6px;
-      max-width: 560px;
-    }
-
-    input, select, button {
-      margin: 4px 0;
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid #243066;
-      width: 100%;
-      box-sizing: border-box;
-      background: #0b1020;
-      color: #eaeaf0;
-    }
-
-    button {
-      background: #243066;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .controls-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .small {
-      font-size: 0.85rem;
-      color: #cfd3ff;
-    }
-
-    #legend {
-      position: absolute;
-      top: 86px;
-      right: 12px;
-      background: rgba(18,26,54,0.95);
-      color: #eaeaf0;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #243066;
-      font-size: 0.9rem;
-      z-index: 1000;
-    }
-
-    #location-status {
-      display: inline-block;
-      margin-left: 8px;
-      color: #aab0ff;
-      font-size: 0.9rem;
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 18px;
-      background: rgba(36,48,102,0.95);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 6px;
-      z-index: 2000;
-      display: none;
-      font-size: 0.95rem;
-    }
-
-    .visible {
-      display: block;
-    }
-
-    /* Mobile adjustments */
-    @media (max-width: 600px) {
-      #legend { top: 140px; right: 8px; }
-      form { margin: 12px; }
-    }
-
+    body { margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #0b1020; color: #eaeaf0; }
+    header { padding: 12px 16px; background: #121a36; border-bottom: 1px solid #243066; display: flex; flex-direction: column; gap: 8px; }
+    .top-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    h1 { margin: 0; font-size: 1.2rem; }
+    .notice { font-size: 0.9rem; margin-top: 6px; color: #cfd3ff; }
+    #maintenance-banner { background: #ff4d4d; color: white; text-align: center; padding: 8px; font-weight: bold; margin-top: 6px; line-height: 1.4; border-radius: 6px; }
+    #map { height: 60vh; width: 100%; }
+    footer { padding: 10px; font-size: 0.8rem; background: #0e1530; border-top: 1px solid #243066; text-align: center; color: #aab0ff; }
+    a { color: #8fb4ff; }
+    form { margin: 12px 16px; background: #121a36; padding: 10px; border-radius: 6px; max-width: 560px; }
+    input, select, button { margin: 4px 0; padding: 8px; border-radius: 4px; border: 1px solid #243066; width: 100%; box-sizing: border-box; background: #0b1020; color: #eaeaf0; }
+    button { background: #243066; color: #fff; font-weight: bold; cursor: pointer; }
+    .controls-row { display: flex; gap: 8px; margin-top: 8px; }
+    .small { font-size: 0.85rem; color: #cfd3ff; }
+    #legend { position: absolute; top: 86px; right: 12px; background: rgba(18,26,54,0.95); color: #eaeaf0; padding: 8px; border-radius: 6px; border: 1px solid #243066; font-size: 0.9rem; z-index: 1000; }
+    #location-status { display: inline-block; margin-left: 8px; color: #aab0ff; font-size: 0.9rem; }
+    .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 18px; background: rgba(36,48,102,0.95); color: #fff; padding: 8px 12px; border-radius: 6px; z-index: 2000; display: none; font-size: 0.95rem; }
+    .visible { display: block; }
+    @media (max-width: 600px) { #legend { top: 140px; right: 8px; } form { margin: 12px; } }
   </style>
 </head>
 
@@ -165,39 +36,29 @@
 <header>
   <div class="top-row">
     <h1>🌌 AuroraSkyGlowLabs — Aurora Reports (BETA)</h1>
-
     <div>
       <button id="locate-btn" type="button" title="Center map on your (approx) location">📍 Use my location</button>
       <span id="location-status" aria-live="polite"></span>
     </div>
   </div>
-
   <div class="notice">
     Reports are community-submitted. Locations are automatically blurred for privacy.
     Please avoid submitting exact coordinates. Limit submissions to 1–2 people at a time 🙂
   </div>
-
-  <!-- Maintenance banner -->
   <div id="maintenance-banner" role="status" aria-live="polite">
     ⚠️ Reports may be missing, duplicated, or otherwise inconsistent — maintenance ongoing.
     (Last updated 1/6/26 11:50am)
     <div style="margin-top:6px;">
       Updates:
-      <a href="https://twitter.com/wistormchaser_" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:underline;">
-        @wistormchaser_
-      </a>
+      <a href="https://twitter.com/wistormchaser_" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:underline;">@wistormchaser_</a>
       ·
-      <a href="https://auroraskyglowlabs1.statuspage.io/" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:underline;">
-        Status Page
-      </a>
+      <a href="https://auroraskyglowlabs1.statuspage.io/" target="_blank" rel="noopener noreferrer" style="color:white; text-decoration:underline;">Status Page</a>
     </div>
   </div>
 </header>
 
-<!-- Map -->
 <div id="map" aria-label="Aurora reports map"></div>
 
-<!-- Legend -->
 <div id="legend" aria-hidden="false">
   <strong>Legend</strong>
   <div style="margin-top:6px;">
@@ -208,324 +69,150 @@
   </div>
 </div>
 
-<!-- Report Form -->
 <form id="report-form" aria-label="Submit an aurora report">
   <h3>Submit a Report</h3>
-
   <label for="event">Event Name</label>
   <input type="text" id="event" placeholder="Aurora, Meteor Shower, Full Moon..." required />
-
   <label for="lat">Latitude (approx)</label>
   <input type="number" step="0.01" id="lat" placeholder="43.0" required />
-
   <label for="lng">Longitude (approx)</label>
   <input type="number" step="0.01" id="lng" placeholder="-88.0" required />
-
   <div class="controls-row">
     <button type="submit">Submit Report</button>
-    <button type="button" id="copy-json-btn">Copy JSON</button>
   </div>
-
   <small class="small" style="display:block; margin-top:6px;">
-    This will generate a JSON object you can paste into a GitHub PR. Your coordinates are blurred for privacy.
+    Reports are saved directly to our live map. Your coordinates are blurred for privacy.
   </small>
 </form>
 
 <footer>
-  Data updates automatically from GitHub ·
+  Data updates automatically ·
   <a href="https://github.com/AuroraSkyGlowLabs" target="_blank" rel="noopener noreferrer">GitHub Org</a>
 </footer>
 
-<!-- Toast -->
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 
 <script>
-  // Constants
-  const REPORTS_URL =
-    "https://raw.githubusercontent.com/AuroraSkyGlowLabs/AuroraReports/main/reports.json?cb=" +
-    Date.now();
+  // --------------------------
+  // Supabase Setup
+  // --------------------------
+  const SUPABASE_URL = "https://coabskvhjoomkpwbpogk.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvYWJza3Zoam9vbWtwd2Jwb2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5MTE4NjQsImV4cCI6MjA4MzQ4Nzg2NH0.NEoNDNyRFHhIl4zYbaTR1HEWP8UpeHdd4shiWW5qZP0";
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const ANON_PRECISION = 1; // number of decimal places to keep (1 => 0.1 degree ~ ~11km). Increase for more blur.
-
-  const EVENT_COLORS = {
-    aurora: '#39ff14',
-    meteor: '#ffcc00',
-    moon: '#ffffff',
-    default: '#66a3ff'
-  };
-
-  // Map initialization
-  const map = L.map("map", {
-    minZoom: 1,
-    maxZoom: 8,
-    scrollWheelZoom: true,
-    doubleClickZoom: false
-  }).setView([43, -88], 4);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
-
+  // --------------------------
+  // Map Initialization
+  // --------------------------
+  const map = L.map("map", { minZoom:1, maxZoom:8, scrollWheelZoom:true }).setView([43, -88], 4);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution:'© OpenStreetMap contributors' }).addTo(map);
   L.control.scale().addTo(map);
 
-  // Helpers
-  function anonymizeCoord(value, decimals = ANON_PRECISION) {
-    const factor = Math.pow(10, decimals);
-    return Math.round(value * factor) / factor;
+  const ANON_PRECISION = 1;
+  const EVENT_COLORS = { aurora:'#39ff14', meteor:'#ffcc00', moon:'#ffffff', default:'#66a3ff' };
+
+  function anonymizeCoord(value) { return Math.round(value * Math.pow(10, ANON_PRECISION)) / Math.pow(10, ANON_PRECISION); }
+  function formatTime(ts){ return new Date(ts).toLocaleString(); }
+  function timeSince(ts){ const s=Math.floor((Date.now()-ts)/1000); if(s<60)return s+'s ago'; const m=Math.floor(s/60); if(m<60)return m+'m ago'; const h=Math.floor(m/60); if(h<24)return h+'h ago'; const d=Math.floor(h/24); return d+'d ago'; }
+  function getEventColor(eventName=''){ const n=eventName.toLowerCase(); if(n.includes('aurora'))return EVENT_COLORS.aurora; if(n.includes('meteor')||n.includes('fireball'))return EVENT_COLORS.meteor; if(n.includes('moon')||n.includes('lunar'))return EVENT_COLORS.moon; return EVENT_COLORS.default; }
+  function showToast(msg,d=3000){const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('visible'); setTimeout(()=>t.classList.remove('visible'),d); }
+
+  // --------------------------
+  // Add report to map
+  // --------------------------
+  function addReportToMap(report){
+    if(typeof report.lat!=='number'||typeof report.lng!=='number')return;
+    const safeLat=anonymizeCoord(report.lat);
+    const safeLng=anonymizeCoord(report.lng);
+    const color=getEventColor(report.event);
+
+    L.circleMarker([safeLat, safeLng],{
+      radius:7,
+      fillColor:color,
+      color:'#000',
+      weight:1,
+      opacity:0.9,
+      fillOpacity:0.9
+    }).addTo(map).bindPopup(`
+      <strong>Event:</strong> ${report.event}<br>
+      <strong>Reported:</strong> ${formatTime(report.timestamp)} (${timeSince(report.timestamp)})<br>
+      <small style="color:#cfd3ff;">Location blurred for privacy</small>
+    `);
   }
 
-  function formatTime(ts) {
-    try {
-      return new Date(ts).toLocaleString();
-    } catch {
-      return "Unknown time";
-    }
-  }
-
-  function timeSince(ts) {
-    const seconds = Math.floor((Date.now() - ts) / 1000);
-    if (seconds < 60) return `${seconds}s ago`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
-    const days = Math.floor(hours / 24);
-    return `${days}d ago`;
-  }
-
-  function getEventColor(eventName = '') {
-    const n = (eventName || '').toLowerCase();
-    if (n.includes('aurora') || n.includes('northern') || n.includes('southern')) return EVENT_COLORS.aurora;
-    if (n.includes('meteor') || n.includes('fireball')) return EVENT_COLORS.meteor;
-    if (n.includes('moon') || n.includes('lunar')) return EVENT_COLORS.moon;
-    return EVENT_COLORS.default;
-  }
-
-  function showToast(msg, duration = 3000) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('visible');
-    setTimeout(() => t.classList.remove('visible'), duration);
-  }
-
-  // Load existing reports and plot them
-  async function loadReports() {
-    try {
-      const response = await fetch(REPORTS_URL);
-      if (!response.ok) throw new Error('Network response not ok: ' + response.status);
-      const reports = await response.json();
-
-      if (!Array.isArray(reports)) throw new Error('reports.json expected to be an array');
-
-      reports.forEach(report => {
-        if (typeof report.lat !== "number" || typeof report.lng !== "number") return;
-
-        const safeLat = anonymizeCoord(report.lat);
-        const safeLng = anonymizeCoord(report.lng);
-        const color = getEventColor(report.event);
-
-        L.circleMarker([safeLat, safeLng], {
-          radius: 7,
-          fillColor: color,
-          color: '#000',
-          weight: 1,
-          opacity: 0.9,
-          fillOpacity: 0.9
-        })
-          .addTo(map)
-          .bindPopup(`
-            <strong>Event:</strong> ${escapeHtml(report.event)}<br>
-            <strong>Reported:</strong> ${formatTime(report.timestamp)} (${timeSince(report.timestamp)})<br>
-            <small style="color:#cfd3ff;">Location blurred for privacy</small>
-          `);
-      });
-    } catch (err) {
-      console.error("Failed to load reports:", err);
-      // Non-blocking UI warning
-      showToast("Failed to load reports. Check console for details.");
-    }
+  // --------------------------
+  // Load all existing reports
+  // --------------------------
+  async function loadReports(){
+    const { data, error } = await supabase.from('Aurora_reportss').select('*');
+    if(error){ console.error(error); showToast('Failed to load reports.'); return; }
+    data.forEach(addReportToMap);
   }
 
   loadReports();
 
+  // --------------------------
+  // Realtime subscription
+  // --------------------------
+  supabase.from('Aurora_reportss').on('INSERT', payload=>{
+    addReportToMap(payload.new);
+    showToast('New report received!');
+  }).subscribe();
+
+  // --------------------------
   // Geolocation
-  let userMarker = null;
-  const locationStatus = document.getElementById('location-status');
+  // --------------------------
+  let userMarker=null;
+  const locationStatus=document.getElementById('location-status');
 
-  function handleGeoSuccess(position, center = true) {
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
+  function handleGeoSuccess(pos, center=true){
+    const lat=pos.coords.latitude;
+    const lng=pos.coords.longitude;
+    const anonLat=anonymizeCoord(lat);
+    const anonLng=anonymizeCoord(lng);
 
-    const anonLat = anonymizeCoord(lat);
-    const anonLng = anonymizeCoord(lng);
+    if(userMarker) userMarker.setLatLng([anonLat, anonLng]);
+    else userMarker=L.circleMarker([anonLat, anonLng],{ radius:8, fillColor:'#ff66b2', color:'#fff', weight:1, fillOpacity:0.9 }).addTo(map).bindPopup('You (approx)');
 
-    // Add/update marker
-    if (userMarker) {
-      userMarker.setLatLng([anonLat, anonLng]);
-    } else {
-      userMarker = L.circleMarker([anonLat, anonLng], {
-        radius: 8,
-        fillColor: '#ff66b2',
-        color: '#fff',
-        weight: 1,
-        fillOpacity: 0.9
-      }).addTo(map).bindPopup('You (approx)');
-    }
+    if(center) map.setView([anonLat, anonLng],6);
 
-    if (center) {
-      map.setView([anonLat, anonLng], 6);
-    }
+    document.getElementById('lat').value=anonLat;
+    document.getElementById('lng').value=anonLng;
 
-    // Fill form with anonymized coords
-    document.getElementById('lat').value = anonLat;
-    document.getElementById('lng').value = anonLng;
-
-    locationStatus.textContent = 'Location set (blurred)';
+    locationStatus.textContent='Location set (blurred)';
     showToast('Location detected and anonymized.');
   }
 
-  function handleGeoError(err) {
-    console.warn('Geolocation error:', err);
-    locationStatus.textContent = 'Location unavailable';
-    showToast('Unable to get location. Click "Use my location" to retry.');
+  function handleGeoError(err){ console.warn(err); locationStatus.textContent='Location unavailable'; showToast('Unable to get location.'); }
+  function requestGeolocation(center=true){
+    if(!navigator.geolocation){ locationStatus.textContent='Geolocation not supported'; showToast('Geolocation unsupported'); return; }
+    locationStatus.textContent='Requesting location...';
+    navigator.geolocation.getCurrentPosition(pos=>handleGeoSuccess(pos,center), handleGeoError,{ enableHighAccuracy:false, timeout:10000, maximumAge:60000 });
   }
-
-  function requestGeolocation(center = true) {
-    if (!navigator.geolocation) {
-      locationStatus.textContent = 'Geolocation not supported';
-      showToast('Geolocation is not supported by your browser.');
-      return;
-    }
-    locationStatus.textContent = 'Requesting location...';
-    navigator.geolocation.getCurrentPosition(
-      pos => handleGeoSuccess(pos, center),
-      err => handleGeoError(err),
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 60_000 }
-    );
-  }
-
-  // Try to automatically geolocate on load (permission prompt)
   requestGeolocation(true);
+  document.getElementById('locate-btn').addEventListener('click',()=>requestGeolocation(true));
 
-  document.getElementById('locate-btn').addEventListener('click', () => {
-    requestGeolocation(true);
-  });
-
-  // ESCAPE HTML for popup safety
-  function escapeHtml(unsafe) {
-    if (!unsafe && unsafe !== 0) return '';
-    return String(unsafe)
-      .replaceAll('&', "&amp;")
-      .replaceAll('<', "&lt;")
-      .replaceAll('>', "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  // FORM SUBMISSION (GITHUB PR helper)
-  function makeReportObject(eventName, lat, lng) {
-    const timestamp = Date.now();
-    return { lat, lng, event: eventName, timestamp };
-  }
-
-  async function copyToClipboard(text) {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text);
-        return true;
-      }
-    } catch (err) {
-      console.warn('Clipboard write failed', err);
-    }
-    return false;
-  }
-
-  function downloadJSON(text, filename = 'aurora-report.json') {
-    const blob = new Blob([text], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  document.getElementById('report-form').addEventListener('submit', async e => {
+  // --------------------------
+  // Form Submission (Supabase)
+  // --------------------------
+  document.getElementById('report-form').addEventListener('submit', async e=>{
     e.preventDefault();
+    const eventName=document.getElementById('event').value.trim();
+    const lat=parseFloat(document.getElementById('lat').value);
+    const lng=parseFloat(document.getElementById('lng').value);
+    if(!eventName||isNaN(lat)||isNaN(lng)){ showToast('Fill all fields correctly.'); return; }
 
-    const eventName = document.getElementById("event").value.trim();
-    const latVal = parseFloat(document.getElementById("lat").value);
-    const lngVal = parseFloat(document.getElementById("lng").value);
+    const { data, error } = await supabase.from('Aurora_reportss').insert([{ event:eventName, lat, lng, timestamp:Date.now() }]);
+    if(error){ console.error(error); showToast('Failed to submit report.'); return; }
 
-    if (!eventName || isNaN(latVal) || isNaN(lngVal)) {
-      alert("Please fill out all fields correctly.");
-      return;
-    }
-
-    // Ensure coordinates remain anonymized before submitting
-    const lat = anonymizeCoord(latVal);
-    const lng = anonymizeCoord(lngVal);
-
-    const newReport = makeReportObject(eventName, lat, lng);
-    const jsonText = JSON.stringify(newReport, null, 2);
-
-    // Try to copy to clipboard
-    const copied = await copyToClipboard(jsonText);
-    if (copied) {
-      showToast('Report JSON copied to clipboard.');
-    } else {
-      showToast('Could not copy automatically; you can download the JSON.');
-    }
-
-    // Offer downloadable JSON (for attaching to PR or including in PR description)
-    const filename = `aurora-report-${newReport.timestamp}.json`;
-    downloadJSON(jsonText, filename);
-
-    // Inform user with a friendly summary and guide
-    alert(
-      `Thanks! Your report JSON is ready.\n\n` +
-      `Event: ${eventName}\nLatitude: ${lat}\nLongitude: ${lng}\nTime: ${formatTime(newReport.timestamp)}\n\n` +
-      `We copied the JSON to your clipboard (if allowed) and downloaded a file named ${filename}. ` +
-      `Create a GitHub PR in the AuroraReports repository and add this JSON to reports.json or use it as a new file.`
-    );
-
-    // Reset form but keep the coords (so user can submit another easily)
-    document.getElementById('event').value = '';
-  });
-
-  // Copy button for manual JSON copy
-  document.getElementById('copy-json-btn').addEventListener('click', async () => {
-    const eventName = document.getElementById("event").value.trim();
-    const latVal = parseFloat(document.getElementById("lat").value);
-    const lngVal = parseFloat(document.getElementById("lng").value);
-
-    if (!eventName || isNaN(latVal) || isNaN(lngVal)) {
-      showToast('Fill event and coordinates first.');
-      return;
-    }
-
-    const lat = anonymizeCoord(latVal);
-    const lng = anonymizeCoord(lngVal);
-    const newReport = makeReportObject(eventName, lat, lng);
-    const jsonText = JSON.stringify(newReport, null, 2);
-
-    const copied = await copyToClipboard(jsonText);
-    if (copied) {
-      showToast('Report JSON copied to clipboard.');
-    } else {
-      downloadJSON(jsonText, `aurora-report-${newReport.timestamp}.json`);
-      showToast('Downloaded JSON file (clipboard not allowed).');
-    }
+    showToast('Report submitted!');
+    document.getElementById('event').value='';
   });
 </script>
-
-<!-- Statuspage Embed -->
-<script src="https://auroraskyglowlabs1.statuspage.io/embed/script.js"></script>
 
 </body>
 </html>
