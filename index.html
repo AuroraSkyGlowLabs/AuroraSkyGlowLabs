@@ -1,102 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AuroraSkyGlowLabs – Aurora Reports (Live)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  
-  <style>
-    body { margin:0; font-family:system-ui; background:#0b1020; color:#eaeaf0; }
-    header { padding:12px 16px; background:#121a36; border-bottom:1px solid #243066; }
-    h1 { margin:0; font-size:1.2rem; }
-    #map { height:60vh; width:100%; }
-    form { margin:12px 16px; background:#121a36; padding:10px; border-radius:6px; max-width:560px; }
-    input, select, button { margin:4px 0; padding:8px; border-radius:4px; border:1px solid #243066; width:100%; box-sizing:border-box; background:#0b1020; color:#eaeaf0; }
-    button { background:#243066; color:#fff; font-weight:bold; cursor:pointer; }
-    .toast { position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background:rgba(36,48,102,0.95); color:#fff; padding:8px 12px; border-radius:6px; z-index:2000; display:none; font-size:0.95rem; }
-    .visible { display:block; }
-  </style>
+<meta charset="UTF-8" />
+<title>AuroraSkyGlowLabs – Aurora Reports (Live)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+body { margin:0; font-family:system-ui; background:#0b1020; color:#eaeaf0; }
+header { padding:12px 16px; background:#121a36; border-bottom:1px solid #243066; display:flex; flex-direction:column; gap:6px; }
+header h1 { margin:0; font-size:1.2rem; }
+#map { height:60vh; width:100%; }
+form { margin:12px 16px; background:#121a36; padding:10px; border-radius:6px; max-width:560px; }
+input, select, button { margin:4px 0; padding:8px; border-radius:4px; border:1px solid #243066; width:100%; box-sizing:border-box; background:#0b1020; color:#eaeaf0; }
+button { background:#243066; color:#fff; font-weight:bold; cursor:pointer; }
+#legend { position:absolute; top:80px; right:12px; background:rgba(18,26,54,0.95); color:#eaeaf0; padding:8px; border-radius:6px; border:1px solid #243066; font-size:0.9rem; z-index:1000; }
+.toast { position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background:rgba(36,48,102,0.95); color:#fff; padding:8px 12px; border-radius:6px; z-index:2000; display:none; font-size:0.95rem; }
+.visible { display:block; }
+.controls-row { display:flex; gap:8px; margin-top:8px; }
+.small { font-size:0.85rem; color:#cfd3ff; }
+#location-status { display:inline-block; margin-left:8px; color:#aab0ff; font-size:0.9rem; }
+</style>
 </head>
+
 <body>
 
 <header>
   <h1>🌌 AuroraSkyGlowLabs – Live Aurora Reports</h1>
+  <div>
+    <button id="locate-btn" type="button">📍 Use my location</button>
+    <span id="location-status" aria-live="polite"></span>
+  </div>
 </header>
 
 <div id="map" aria-label="Aurora reports map"></div>
+
+<div id="legend">
+  <strong>Legend</strong>
+  <div style="margin-top:6px;">
+    <div><span style="display:inline-block;width:12px;height:12px;background:#39ff14;border-radius:2px;margin-right:6px;"></span> Aurora</div>
+    <div><span style="display:inline-block;width:12px;height:12px;background:#ffcc00;border-radius:2px;margin-right:6px;"></span> Meteor / Fireball</div>
+    <div><span style="display:inline-block;width:12px;height:12px;background:#ffffff;border:1px solid #ccc;border-radius:2px;margin-right:6px;"></span> Full Moon / Lunar</div>
+    <div><span style="display:inline-block;width:12px;height:12px;background:#66a3ff;border-radius:2px;margin-right:6px;"></span> Other</div>
+  </div>
+</div>
 
 <form id="report-form">
   <h3>Submit a Report</h3>
   <label for="event">Event Name</label>
   <input type="text" id="event" placeholder="Aurora, Meteor Shower, Full Moon..." required />
-
   <label for="lat">Latitude (approx)</label>
   <input type="number" step="0.01" id="lat" placeholder="43.0" required />
-
   <label for="lng">Longitude (approx)</label>
   <input type="number" step="0.01" id="lng" placeholder="-88.0" required />
 
-  <button type="submit">Submit Report</button>
+  <div class="controls-row">
+    <button type="submit">Submit Report</button>
+  </div>
+  <small class="small">Coordinates are blurred automatically for privacy.</small>
 </form>
 
 <div id="toast" class="toast"></div>
 
-<!-- Leaflet JS -->
+<!-- Leaflet & Supabase -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.24.0/dist/supabase.min.js"></script>
 
 <script>
-  // --- SUPABASE CONFIG ---
-  const SUPABASE_URL = "https://coabskvhjoomkpwbpogk.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvYWJza3Zoam9vbWtwd2Jwb2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5MTE4NjQsImV4cCI6MjA4MzQ4Nzg2NH0.NEoNDNyRFHhIl4zYbaTR1HEWP8UpeHdd4shiWW5qZP0";
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = "https://coabskvhjoomkpwbpogk.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvYWJza3Zoam9vbWtwd2Jwb2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5MTE4NjQsImV4cCI6MjA4MzQ4Nzg2NH0.NEoNDNyRFHhIl4zYbaTR1HEWP8UpeHdd4shiWW5qZP0";
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // --- MAP SETUP ---
-  const map = L.map("map", { minZoom: 1, maxZoom: 8 }).setView([43, -88], 4);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution:'© OpenStreetMap' }).addTo(map);
+const map = L.map("map", { minZoom:1, maxZoom:8 }).setView([43,-88],4);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{ attribution:'© OpenStreetMap contributors' }).addTo(map);
 
-  // --- HELPERS ---
-  const ANON_PRECISION = 1;
-  const EVENT_COLORS = { aurora:'#39ff14', meteor:'#ffcc00', moon:'#ffffff', default:'#66a3ff' };
+const ANON_PRECISION = 1;
+const EVENT_COLORS = { aurora:'#39ff14', meteor:'#ffcc00', moon:'#ffffff', default:'#66a3ff' };
+let userMarker = null;
+const locationStatus = document.getElementById('location-status');
 
-  function anonymizeCoord(val) { return Math.round(val*Math.pow(10, ANON_PRECISION))/Math.pow(10, ANON_PRECISION); }
-  function getEventColor(name='') { const n=name.toLowerCase(); if(n.includes('aurora')||n.includes('northern')||n.includes('southern')) return EVENT_COLORS.aurora; if(n.includes('meteor')||n.includes('fireball')) return EVENT_COLORS.meteor; if(n.includes('moon')||n.includes('lunar')) return EVENT_COLORS.moon; return EVENT_COLORS.default; }
-  function showToast(msg,d=3000){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('visible'); setTimeout(()=>t.classList.remove('visible'),d); }
-  function escapeHtml(u){ return String(u).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
+function anonymizeCoord(val){ return Math.round(val*Math.pow(10,ANON_PRECISION))/Math.pow(10,ANON_PRECISION); }
+function getEventColor(name=''){ const n=name.toLowerCase(); if(n.includes('aurora')||n.includes('northern')||n.includes('southern')) return EVENT_COLORS.aurora; if(n.includes('meteor')||n.includes('fireball')) return EVENT_COLORS.meteor; if(n.includes('moon')||n.includes('lunar')) return EVENT_COLORS.moon; return EVENT_COLORS.default; }
+function showToast(msg,d=3000){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('visible'); setTimeout(()=>t.classList.remove('visible'),d); }
+function escapeHtml(u){ return String(u).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
 
-  // --- LOAD SUPABASE REPORTS ---
-  async function loadReports(){
-    try{
-      const {data,error}=await supabase.from('Aurora_reportss').select('*').order('timestamp',{ascending:false});
-      if(error) throw error;
-      data.forEach(r=>{
-        if(typeof r.lat!=='number'||typeof r.lng!=='number') return;
-        const lat=anonymizeCoord(r.lat), lng=anonymizeCoord(r.lng), color=getEventColor(r.event);
-        L.circleMarker([lat,lng],{radius:7,fillColor:color,color:'#000',weight:1,opacity:0.9,fillOpacity:0.9})
-          .addTo(map).bindPopup(`<strong>Event:</strong> ${escapeHtml(r.event)}<br><strong>Reported:</strong> ${new Date(r.timestamp).toLocaleString()}<br><small>Location blurred</small>`);
-      });
-      showToast(`Loaded ${data.length} reports.`);
-    }catch(err){ console.error(err); showToast("Failed to load reports."); }
-  }
+async function loadReports(){
+  try{
+    const {data,error} = await supabase.from('Aurora_reportss').select('*').order('timestamp',{ascending:false});
+    if(error) throw error;
+    data.forEach(r=>{
+      if(typeof r.lat!=='number'||typeof r.lng!=='number') return;
+      const lat=anonymizeCoord(r.lat), lng=anonymizeCoord(r.lng), color=getEventColor(r.event);
+      L.circleMarker([lat,lng],{radius:7,fillColor:color,color:'#000',weight:1,opacity:0.9,fillOpacity:0.9})
+        .addTo(map).bindPopup(`<strong>Event:</strong> ${escapeHtml(r.event)}<br><strong>Reported:</strong> ${new Date(r.timestamp).toLocaleString()}<br><small>Location blurred</small>`);
+    });
+  }catch(err){ console.error(err); showToast("Failed to load reports."); }
+}
+
+loadReports();
+
+// Geolocation
+function handleGeoSuccess(pos, center=true){
+  const lat=anonymizeCoord(pos.coords.latitude);
+  const lng=anonymizeCoord(pos.coords.longitude);
+  if(userMarker){ userMarker.setLatLng([lat,lng]); } 
+  else { userMarker = L.circleMarker([lat,lng],{radius:8,fillColor:'#ff66b2',color:'#fff',weight:1,fillOpacity:0.9}).addTo(map).bindPopup('You (approx)'); }
+  if(center) map.setView([lat,lng],6);
+  document.getElementById('lat').value=lat;
+  document.getElementById('lng').value=lng;
+  locationStatus.textContent='Location set (blurred)';
+  showToast('Location detected and anonymized.');
+}
+
+function handleGeoError(err){ console.warn(err); locationStatus.textContent='Location unavailable'; showToast('Unable to get location.'); }
+function requestGeolocation(center=true){ 
+  if(!navigator.geolocation){ locationStatus.textContent='Not supported'; showToast('Geolocation not supported'); return; }
+  locationStatus.textContent='Requesting location...';
+  navigator.geolocation.getCurrentPosition(pos=>handleGeoSuccess(pos,center), err=>handleGeoError(err), {enableHighAccuracy:false,timeout:10000,maximumAge:60000});
+}
+document.getElementById('locate-btn').addEventListener('click',()=>requestGeolocation(true));
+requestGeolocation(true);
+
+// Submit form
+document.getElementById('report-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const eventName=document.getElementById('event').value.trim();
+  const lat=parseFloat(document.getElementById('lat').value);
+  const lng=parseFloat(document.getElementById('lng').value);
+  if(!eventName||isNaN(lat)||isNaN(lng)){ showToast('Fill all fields correctly.'); return; }
+  const {error}=await supabase.from('Aurora_reportss').insert([{event:eventName,lat:lat,lng:lng,timestamp:Date.now()}]);
+  if(error){ console.error(error); showToast('Failed to submit.'); return; }
+  showToast('Report submitted!');
+  document.getElementById('event').value='';
   loadReports();
-
-  // --- SUBMIT FORM ---
-  document.getElementById('report-form').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const eventName=document.getElementById('event').value.trim();
-    const lat=parseFloat(document.getElementById('lat').value);
-    const lng=parseFloat(document.getElementById('lng').value);
-    if(!eventName||isNaN(lat)||isNaN(lng)){ showToast('Fill all fields correctly.'); return; }
-    const {error}=await supabase.from('Aurora_reportss').insert([{event:eventName,lat:lat,lng:lng,timestamp:Date.now()}]);
-    if(error){ console.error(error); showToast('Failed to submit.'); return; }
-    showToast('Report submitted!');
-    document.getElementById('event').value='';
-    loadReports(); // refresh map
-  });
+});
 </script>
+
 </body>
 </html>
